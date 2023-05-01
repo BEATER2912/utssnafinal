@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  web:
+    build: 
+      context: ./RedlockPHPWEB
+      dockerfile: DockerFile
+    image: redlock-web-2.0
+    container_name: redlock-web-2.0
+    depends_on:
+      - database
+    volumes:
+      - ./RedlockPHPWEB:/var/www/html
+    ports:
+      - "7077:80"
+  
+  database:
+    build:
+      context: ./RedlockDatabase
+      dockerfile: DockerFile
+    image: mysql
+    container_name: redlockdb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: redlock
+      MYSQL_USER: MYSQL_USER
+      MYSQL_PASSWORD: MYSQL_PASSWORD
+    volumes:
+      - ./RedlockDatabase/redlock.db.sql:/docker-entrypoint-initdb.d/redlock-db.sql
+
+  jenkins:
+    build: 
+      context: ./RedlockJenkins
+      dockerfile: DockerFile
+    ports:
+      - "8080:80"
